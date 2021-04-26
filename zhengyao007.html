@@ -1,0 +1,122 @@
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>My Map</title>
+    <style>
+        html,body
+        {
+            height:100%;
+            width:100%;
+            padding:0;
+        }
+        #div1
+        {
+            background: #DDFFBC;
+            width:98%;
+            height:10%;
+            margin-left: 1%;
+            margin-right: 1%;
+            margin-top: 1%;
+            border: 2px solid #52734D;
+        }
+        #deepView
+        {
+            background-color:#91C788;
+            height:90%;
+            width:29%;
+            float:right;
+            margin-right: 1%;
+            margin-bottom: 2%;
+            border: 1px solid #52734D;
+        }
+        #viewDiv
+        {
+            background-color:#52734D;
+            height:90%;
+            width:69%;
+            float:left;
+            margin-left: 1%;
+            margin-bottom: 2%;
+            border: 1px solid #52734D;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.19/"></script>
+
+    <script>
+        require(["esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/widgets/Legend",
+            "esri/widgets/ScaleBar",
+            "esri/widgets/Search",
+            "esri/widgets/LayerList",
+            "esri/widgets/BasemapGallery"
+        ], (Map, MapView,FeatureLayer,Legend,ScaleBar,Search,LayerList,BasemapGallery) => {
+            const layer = new FeatureLayer({
+                url: "http://www.arcgisonline.cn/server/rest/services/Hosted/CN_34Capital_JDY/FeatureServer"});
+            const map = new Map({
+                basemap: "streets-vector",  // The initial basemap to toggle from
+                ground: "world-elevation",
+                layers:[layer]
+            });
+            var view = new MapView({
+                container: "viewDiv",
+                map: map,
+                zoom: 4,
+                center: [121, 20] // longitude, latitude
+            });
+
+
+            var legend = new Legend({
+                view: view,
+                layerInfos: [{
+                    layer: layer,
+                    title: "China pop change rank"}]
+            });
+            var searchWidget = new Search({
+                view: view
+            });
+            var scaleBar = new ScaleBar({
+                view: view,
+                style:"ruler",
+                unit:"metric"
+            });
+            var layerList = new LayerList({
+                view: view
+            });
+            var basemapGallery = new BasemapGallery({
+                container: "deepView",
+                showArcGISBasemaps: true,
+                view: view
+            },"deepView");
+// Add widget to the top right corner of the view
+            view.ui.add(basemapGallery, {
+                position: "top-center"
+            });
+// Adds widget below other elements in the top left corner of the view
+            view.ui.add(layerList, {
+                position: "top-left"
+            });
+            view.ui.add(scaleBar, {
+                position:"bottom-left"
+            });
+            view.ui.add(searchWidget, {
+                position: "top-left",
+                index: 2
+            });
+            view.ui.add(legend, "top-right");
+        });
+    </script>
+</head>
+
+<body>
+    <div id="div1"><h1 align="center" >My map <small><small>by - zhengyao</small></small></h1></div>
+    <div id="viewDiv"></div>
+    <div id="deepView"></div>
+
+</body>
+</html>
